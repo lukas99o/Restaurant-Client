@@ -1,0 +1,24 @@
+﻿@model List<Table>
+
+<a asp-action="Welcome" asp-controller="Login" class="btn btn-primary">Return</a>
+
+@foreach (var table in Model)
+{
+    <div class="card" style="width:18rem">
+        <div class="card-body">
+            <h5 class="card-title">Table Number: @table.TableID</h5>
+
+            <p class="card-text">Table Seats: @table.TableSeats</p>
+            <p class="card-text">Table Available: @table.IsAvailable</p>
+            <a asp-controller="Tables" asp-action="Edit" asp-route-id=@table.TableID class="btn btn-warning">Edit</a>
+
+            <form method="post" asp-action="Delete" style="display:inline;">
+                <input type="hidden" name="tableID" value="@table.TableID" />
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+
+        </div>
+    </div>
+}
+
+<a asp-action="Create" asp-controller="Tables" class="btn btn-primary">Create</a>

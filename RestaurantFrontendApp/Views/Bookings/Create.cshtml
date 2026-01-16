@@ -1,0 +1,35 @@
+﻿@model Booking
+
+<a asp-action="Index" asp-controller="Bookings" class="btn btn-primary">Return</a>
+
+<h1>Create New Booking</h1>
+
+<form asp-action="Create" method="post">
+    <div class="from-group">
+        <label asp-for="CustomerID"></label>
+        <input asp-for="CustomerID" class="form-control" />
+        <span asp-validation-for="CustomerID" class="text-danger"></span>
+    </div>
+    <div class="from-group">
+        <label asp-for="TableID"></label>
+        <input asp-for="TableID" class="form-control" />
+        <span asp-validation-for="TableID" class="text-danger"></span>
+    </div>
+    <div class="from-group">
+        <label asp-for="AmountOfPeople"></label>
+        <input asp-for="AmountOfPeople" class="form-control" />
+        <span asp-validation-for="AmountOfPeople" class="text-danger"></span>
+    </div>
+    <div class="from-group">
+        <label asp-for="Time"></label>
+        <input asp-for="Time" class="form-control" />
+        <span asp-validation-for="Time" class="text-danger"></span>
+    </div>
+    <div class="from-group">
+        <label asp-for="TimeEnd"></label>
+        <input asp-for="TimeEnd" class="form-control" />
+        <span asp-validation-for="TimeEnd" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>

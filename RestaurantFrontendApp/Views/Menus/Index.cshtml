@@ -1,0 +1,22 @@
+﻿@model List<Menu>
+
+<a asp-action="Welcome" asp-controller="Login" class="btn btn-primary">Return</a>
+
+@foreach (var menu in Model)
+{
+    <div class="card" style="width:18rem">
+        <div class="card-body">
+            <h5 class="card-title">Menu Title: @menu.Name</h5>
+
+            <a asp-controller="Menus" asp-action="Edit" asp-route-id=@menu.MenuID class="btn btn-warning">Edit</a>
+
+            <form method="post" asp-action="Delete" style="display:inline;">
+                <input type="hidden" name="menuID" value="@menu.MenuID" />
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+
+        </div>
+    </div>
+}
+
+<a asp-action="Create" asp-controller="Menus" class="btn btn-primary">Create</a>

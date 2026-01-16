@@ -1,0 +1,24 @@
+﻿<div class="d-flex justify-content-center align-content-center mt-4">
+    <div class="card shadow rounded-4 p-4" style="width: 100%; max-width: 400px;">
+        <div class="card-body">
+            <h4 class="card-title mb-4 text-center">Logga in som Admin</h4>
+            <form method="post" asp-action="Login">
+                @if (ViewBag.Error != null) {
+                    <div class="alert alert-danger text-center">@ViewBag.Error</div>
+                }
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" class="form-control" name="email" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" name="password" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Logga in</button>
+            </form>
+        </div>
+    </div>
+</div>

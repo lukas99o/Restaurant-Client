@@ -1,0 +1,63 @@
+﻿@model List<MenuItem>
+@using System.Linq
+
+<div class="position-relative overflow-hidden mb-5 rounded-3 shadow" style="background: linear-gradient(135deg, #212529 0%, #343a40 50%, #6c757d 100%);">
+    <div class="p-4 p-md-5 text-center text-white">
+        <h1 class="display-5 fw-bold mb-2">Our food and drinks</h1>
+        <p class="lead mb-0">Curated favorites for every mood.</p>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row g-4 align-items-stretch">
+        <div class="col-12">
+            <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-2">
+                <h2 class="text-dark mb-0">Dishes</h2>
+                <span class="badge rounded-pill bg-light text-dark border">Savory picks</span>
+            </div>
+        </div>
+        @foreach (var food in Model.Where(item => item.MenuID == 1))
+        {
+            <div class="col-12 col-md-6 col-lg-4 col-xxl-3">
+                <div class="card h-100 border shadow-sm">
+                    <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Dish</span>
+                        <span class="badge bg-dark fs-6">$@food.Price</span>
+                    </div>
+                    <div class="card-body bg-white d-flex flex-column">
+                        <h5 class="card-title fw-semibold text-dark mb-2">@food.Name</h5>
+                        <p class="card-text text-secondary flex-grow-1 mb-3">@food.Description</p>
+                        <div class="d-flex justify-content-end">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="row g-4 align-items-stretch mt-4">
+        <div class="col-12">
+            <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-2">
+                <h2 class="text-dark mb-0">Drinks</h2>
+                <span class="badge rounded-pill bg-light text-dark border">Cool sips</span>
+            </div>
+        </div>
+        @foreach (var drink in Model.Where(item => item.MenuID == 2))
+        {
+            <div class="col-12 col-md-6 col-lg-4 col-xxl-3">
+                <div class="card h-100 border shadow-sm">
+                    <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                        <span class="badge bg-info-subtle text-info border border-info-subtle">Drink</span>
+                        <span class="badge bg-dark fs-6">$@drink.Price</span>
+                    </div>
+                    <div class="card-body bg-white d-flex flex-column">
+                        <h5 class="card-title fw-semibold text-dark mb-2">@drink.Name</h5>
+                        <p class="card-text text-secondary flex-grow-1 mb-3">@drink.Description</p>
+                        <div class="d-flex justify-content-end">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

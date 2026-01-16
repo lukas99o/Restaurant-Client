@@ -1,0 +1,57 @@
+﻿@model Booking
+
+@{
+    var currentTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+}
+
+<div class="container mt-5">
+    <h1 class="text-center text-white bg-dark py-3 rounded">Booking Table: @Model.TableID</h1>
+
+    <form asp-action="Book" method="post" class="bg-light p-4 rounded shadow mt-4">
+        <input type="hidden" asp-for="TableID" />
+        
+        <div class="form-group mb-3">
+            <label asp-for="Name" class="form-label text-dark">Name</label>
+            <input asp-for="Name" class="form-control"  type="text"/>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Email" class="form-label text-dark">Email</label>
+            <input asp-for="Email" class="form-control" type="email" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Phone" class="form-label text-dark">Phone</label>
+            <input asp-for="Phone" class="form-control" type="tel" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+        
+        <div class="form-group mb-3">
+            <label asp-for="AmountOfPeople" class="form-label text-dark">Number of People</label>
+            <input asp-for="AmountOfPeople" class="form-control" min="1" max="@Model.MaxSeats" />
+            <span asp-validation-for="AmountOfPeople" class="text-danger"></span>
+        </div>
+        
+        <div class="form-group mb-3">
+            <label asp-for="Time" class="form-label text-dark">Booking Start Time</label>
+            <input asp-for="Time" class="form-control" type="datetime-local" min="@currentTime" />
+            <span asp-validation-for="Time" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="TimeEnd" class="form-label text-dark">Booking End Time</label>
+            <input asp-for="TimeEnd" class="form-control" type="datetime-local" min="@currentTime" />
+            <span asp-validation-for="TimeEnd" class="text-danger"></span>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-dark">Create Booking</button>
+        </div>
+    </form>
+
+    <div class="text-center mt-3">
+        <button class="btn btn-secondary" onclick="history.back()">Return</button>
+    </div>
+</div>
