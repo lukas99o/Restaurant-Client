@@ -1,6 +1,6 @@
 # Restaurant Application Frontend
 
-This is a simple **MVC frontend** for managing a restaurant, created for a school project. The application interacts with a backend API to perform CRUD operations on various tables such as customers, tables, menu items, and bookings.
+This is a **MVC frontend** for managing a restaurant, created for a school project. The application interacts with a backend API to perform CRUD operations on various tables such as customers, tables, menu items, and bookings.
 
 ## Features
 - **View Menu**: Displays the restaurant's menu.
