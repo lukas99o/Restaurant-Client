@@ -7,9 +7,6 @@ namespace ResturangFrontEnd.Models
         public int BookingID { get; set; }
 
         [Required(ErrorMessage = "This field can't be empty")]
-        public int CustomerID { get; set; }
-
-        [Required(ErrorMessage = "This field can't be empty")]
         public int TableID { get; set; }
 
         [Required(ErrorMessage = "This field can't be empty")]
