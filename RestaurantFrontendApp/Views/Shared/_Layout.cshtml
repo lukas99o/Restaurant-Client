@@ -39,7 +39,7 @@
                             <a class="@(NavLinkClass("Home", "Menu"))" asp-area="" asp-controller="Home" asp-action="Menu">Our Menu</a>
                         </li>
                         <li class="nav-item">
-                            <a class="@(NavLinkClass("BookTable", "Index"))" asp-area="" asp-controller="BookTable" asp-action="Index">Book Table</a>
+                            <a class="@(NavLinkClass("Home", "AvailableTables"))" asp-area="" asp-controller="Home" asp-action="AvailableTables">Available Tables</a>
                         </li>
                         @{
                             var token = Context.Request.Cookies["jwt"];

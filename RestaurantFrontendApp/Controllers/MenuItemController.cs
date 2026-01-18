@@ -7,12 +7,12 @@ using System.Text;
 namespace ResturangFrontEnd.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class MenuItemsController : Controller
+    public class MenuItemController : Controller
     {
         private readonly HttpClient _httpClient;
         private string baseUrl = "https://localhost:7157/";
 
-        public MenuItemsController(HttpClient httpClient)
+        public MenuItemController(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

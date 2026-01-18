@@ -1,7 +1,6 @@
 using System.Net;
 using System.Text;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ResturangFrontEnd.Controllers;
@@ -10,48 +9,44 @@ using Restaurant_Frontend_Tests.Helpers;
 
 namespace Restaurant_Frontend_Tests.Controllers
 {
-    public class BookingsControllerTests
+    public class MenuItemControllerTests
     {
         [Fact]
-        public async Task Index_ReturnsViewWithBookingsFromApi()
+        public async Task Index_ReturnsViewWithMenuItemsFromApi()
         {
-            var booking = new Booking
+            var menuItem = new MenuItem
             {
-                BookingID = 1,
-                TableID = 2,
-                AmountOfPeople = 3,
-                Time = DateTime.UtcNow,
-                TimeEnd = DateTime.UtcNow.AddHours(2),
-                Name = "Guest",
-                Email = "guest@example.com",
-                Phone = "123456"
+                MenuItemID = 1,
+                Name = "Dish",
+                Description = "Tasty",
+                Price = 99
             };
 
             var handler = new DelegatingHandlerStub((request, _) =>
             {
                 request.Method.Should().Be(HttpMethod.Get);
-                request.RequestUri!.AbsoluteUri.Should().Contain("api/Bookings");
+                request.RequestUri!.AbsoluteUri.Should().Contain("api/MenuItems");
 
-                var json = JsonConvert.SerializeObject(new List<Booking> { booking });
+                var json = JsonConvert.SerializeObject(new List<MenuItem> { menuItem });
                 return new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent(json, Encoding.UTF8, "application/json")
                 };
             });
 
-            var controller = new BookingsController(new HttpClient(handler));
+            var controller = new MenuItemController(new HttpClient(handler));
 
             var result = await controller.Index();
 
             var view = result.Should().BeOfType<ViewResult>().Subject;
-            var model = view.Model.Should().BeAssignableTo<List<Booking>>().Subject;
-            model.Should().ContainSingle().Which.BookingID.Should().Be(booking.BookingID);
+            var model = view.Model.Should().BeAssignableTo<List<MenuItem>>().Subject;
+            model.Should().ContainSingle().Which.MenuItemID.Should().Be(menuItem.MenuItemID);
         }
 
         [Fact]
         public void Create_Get_ReturnsView()
         {
-            var controller = new BookingsController(new HttpClient(new DelegatingHandlerStub((_, __) => new HttpResponseMessage(HttpStatusCode.OK))));
+            var controller = new MenuItemController(new HttpClient(new DelegatingHandlerStub((_, __) => new HttpResponseMessage(HttpStatusCode.OK))));
 
             var result = controller.Create();
 
@@ -61,15 +56,15 @@ namespace Restaurant_Frontend_Tests.Controllers
         [Fact]
         public async Task Create_Post_InvalidModel_ReturnsViewWithModel()
         {
-            var controller = new BookingsController(new HttpClient(new DelegatingHandlerStub((_, __) => new HttpResponseMessage(HttpStatusCode.OK))));
+            var controller = new MenuItemController(new HttpClient(new DelegatingHandlerStub((_, __) => new HttpResponseMessage(HttpStatusCode.OK))));
             controller.ModelState.AddModelError("Name", "Required");
 
-            var booking = new Booking { Name = string.Empty };
+            var menuItem = new MenuItem { Name = string.Empty };
 
-            var result = await controller.Create(booking);
+            var result = await controller.Create(menuItem);
 
             var view = result.Should().BeOfType<ViewResult>().Subject;
-            view.Model.Should().BeSameAs(booking);
+            view.Model.Should().BeSameAs(menuItem);
         }
 
         [Fact]
@@ -78,73 +73,68 @@ namespace Restaurant_Frontend_Tests.Controllers
             var handler = new DelegatingHandlerStub((request, _) =>
             {
                 request.Method.Should().Be(HttpMethod.Post);
-                request.RequestUri!.AbsoluteUri.Should().Contain("CreateBooking");
+                request.RequestUri!.AbsoluteUri.Should().Contain("CreateMenuItem");
                 return new HttpResponseMessage(HttpStatusCode.Created);
             });
 
-            var controller = new BookingsController(new HttpClient(handler));
+            var controller = new MenuItemController(new HttpClient(handler));
 
-            var booking = new Booking
+            var menuItem = new MenuItem
             {
-                BookingID = 1,
-                TableID = 2,
-                AmountOfPeople = 3,
-                Time = DateTime.UtcNow,
-                TimeEnd = DateTime.UtcNow.AddHours(1),
-                Name = "Guest",
-                Email = "guest@example.com",
-                Phone = "123456"
+                MenuItemID = 2,
+                Name = "Soup",
+                Description = "Hot",
+                Price = 55
             };
 
-            var result = await controller.Create(booking);
+            var result = await controller.Create(menuItem);
 
             var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
             redirect.ActionName.Should().Be("Index");
         }
 
         [Fact]
-        public async Task Edit_Get_ReturnsBookingFromApi()
+        public async Task Edit_Get_ReturnsMenuItemFromApi()
         {
-            var booking = new Booking
+            var menuItem = new MenuItem
             {
-                BookingID = 5,
-                Name = "Guest",
-                TableID = 1
+                MenuItemID = 5,
+                Name = "Pasta"
             };
 
             var handler = new DelegatingHandlerStub((request, _) =>
             {
                 request.Method.Should().Be(HttpMethod.Get);
-                request.RequestUri!.AbsoluteUri.Should().Contain($"GetSpecificBooking/{booking.BookingID}");
+                request.RequestUri!.AbsoluteUri.Should().Contain($"GetSpecificMenuItem/{menuItem.MenuItemID}");
 
-                var json = JsonConvert.SerializeObject(booking);
+                var json = JsonConvert.SerializeObject(menuItem);
                 return new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent(json, Encoding.UTF8, "application/json")
                 };
             });
 
-            var controller = new BookingsController(new HttpClient(handler));
+            var controller = new MenuItemController(new HttpClient(handler));
 
-            var result = await controller.Edit(booking.BookingID);
+            var result = await controller.Edit(menuItem.MenuItemID);
 
             var view = result.Should().BeOfType<ViewResult>().Subject;
-            var model = view.Model.Should().BeOfType<Booking>().Subject;
-            model.BookingID.Should().Be(booking.BookingID);
+            var model = view.Model.Should().BeOfType<MenuItem>().Subject;
+            model.MenuItemID.Should().Be(menuItem.MenuItemID);
         }
 
         [Fact]
         public async Task Edit_Post_InvalidModel_ReturnsViewWithModel()
         {
-            var controller = new BookingsController(new HttpClient(new DelegatingHandlerStub((_, __) => new HttpResponseMessage(HttpStatusCode.OK))));
+            var controller = new MenuItemController(new HttpClient(new DelegatingHandlerStub((_, __) => new HttpResponseMessage(HttpStatusCode.OK))));
             controller.ModelState.AddModelError("Name", "Required");
 
-            var booking = new Booking { BookingID = 3, Name = string.Empty };
+            var menuItem = new MenuItem { MenuItemID = 3, Name = string.Empty };
 
-            var result = await controller.Edit(booking);
+            var result = await controller.Edit(menuItem);
 
             var view = result.Should().BeOfType<ViewResult>().Subject;
-            view.Model.Should().BeSameAs(booking);
+            view.Model.Should().BeSameAs(menuItem);
         }
 
         [Fact]
@@ -153,15 +143,15 @@ namespace Restaurant_Frontend_Tests.Controllers
             var handler = new DelegatingHandlerStub((request, _) =>
             {
                 request.Method.Should().Be(HttpMethod.Put);
-                request.RequestUri!.AbsoluteUri.Should().Contain($"UpdateBooking/7");
+                request.RequestUri!.AbsoluteUri.Should().Contain($"UpdateMenuItem/4");
                 return new HttpResponseMessage(HttpStatusCode.OK);
             });
 
-            var controller = new BookingsController(new HttpClient(handler));
+            var controller = new MenuItemController(new HttpClient(handler));
 
-            var booking = new Booking { BookingID = 7, Name = "Updated" };
+            var menuItem = new MenuItem { MenuItemID = 4, Name = "Updated" };
 
-            var result = await controller.Edit(booking);
+            var result = await controller.Edit(menuItem);
 
             var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
             redirect.ActionName.Should().Be("Index");
@@ -173,13 +163,13 @@ namespace Restaurant_Frontend_Tests.Controllers
             var handler = new DelegatingHandlerStub((request, _) =>
             {
                 request.Method.Should().Be(HttpMethod.Delete);
-                request.RequestUri!.AbsoluteUri.Should().Contain("DeleteBooking/9");
+                request.RequestUri!.AbsoluteUri.Should().Contain("DeleteMenuItem/8");
                 return new HttpResponseMessage(HttpStatusCode.OK);
             });
 
-            var controller = new BookingsController(new HttpClient(handler));
+            var controller = new MenuItemController(new HttpClient(handler));
 
-            var result = await controller.Delete(9);
+            var result = await controller.Delete(8);
 
             var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
             redirect.ActionName.Should().Be("Index");

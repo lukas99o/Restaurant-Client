@@ -6,12 +6,12 @@ using System.Text;
 
 namespace ResturangFrontEnd.Controllers
 {
-    public class BookingsController : Controller
+    public class BookingController : Controller
     {
         private readonly HttpClient _httpClient;
         private string baseUrl = "https://localhost:7157/";
 
-        public BookingsController(HttpClient httpClient)
+        public BookingController(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
