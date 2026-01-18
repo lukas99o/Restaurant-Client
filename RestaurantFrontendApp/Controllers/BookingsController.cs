@@ -6,7 +6,6 @@ using System.Text;
 
 namespace ResturangFrontEnd.Controllers
 {
-    [Authorize(Roles = "Admin")]
     public class BookingsController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -17,6 +16,7 @@ namespace ResturangFrontEnd.Controllers
             _httpClient = httpClient;
         }
 
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             ViewData["Title"] = "Bookings";
@@ -31,6 +31,7 @@ namespace ResturangFrontEnd.Controllers
             return View(bookingList);
         }
 
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["Title"] = "Create Booking";
@@ -38,6 +39,7 @@ namespace ResturangFrontEnd.Controllers
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(Booking booking)
         {
@@ -56,7 +58,8 @@ namespace ResturangFrontEnd.Controllers
 
             return RedirectToAction("Index");
         }
-
+        
+        [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
             ViewData["Title"] = "Edit Booking";
@@ -71,7 +74,8 @@ namespace ResturangFrontEnd.Controllers
 
             return View(booking);
         }
-
+        
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Edit(Booking booking)
         {
@@ -90,7 +94,8 @@ namespace ResturangFrontEnd.Controllers
 
             return RedirectToAction("Index");
         }
-
+        
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Delete(int bookingID)
         {
@@ -99,6 +104,5 @@ namespace ResturangFrontEnd.Controllers
             var response = await _httpClient.DeleteAsync($"{baseUrl}api/Bookings/DeleteBooking/{bookingID}");
             return RedirectToAction("Index");
         }
-
     }
 }
