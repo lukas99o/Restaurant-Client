@@ -98,14 +98,17 @@ namespace ResturangFrontEnd.Controllers
         {
             var nowLocal = DateTime.Now;
 
-            var startHour = 0;
+            const int openingHour = 9;
+            const int closingHour = 21;
+
+            var startHour = openingHour;
             if (selectedDateLocal.Date == nowLocal.Date)
             {
-                startHour = nowLocal.Hour + 1;
+                startHour = Math.Max(openingHour, nowLocal.Hour + 1);
             }
 
             var hours = new List<int>();
-            for (var h = startHour; h <= 23; h++)
+            for (var h = startHour; h <= closingHour; h++)
             {
                 hours.Add(h);
             }

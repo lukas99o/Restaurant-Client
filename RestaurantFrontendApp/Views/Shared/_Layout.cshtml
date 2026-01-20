@@ -8,9 +8,25 @@
     var title = ViewData["Title"] ?? "Kifo Restaurant";
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    
+    // Helper to check if a nav link should be active
+    bool IsNavLinkActive(string controller, string action = null)
+    {
+        if (currentController != controller) return false;
+        
+        // For AvailableTables, also highlight when on ConfirmAvailableTable or BookAvailableTable
+        if (controller == "Home" && action == "AvailableTables")
+        {
+            return currentAction == "AvailableTables" || 
+                   currentAction == "ConfirmAvailableTable" || 
+                   currentAction == "BookAvailableTable";
+        }
+        
+        return action == null || currentAction == action;
+    }
+    
     string NavLinkClass(string controller, string action = null) =>
-        currentController == controller && (action == null || currentAction == action)
-            ? "nav-link active fw-semibold text-warning" : "nav-link";
+        IsNavLinkActive(controller, action) ? "nav-link active fw-semibold text-warning" : "nav-link";
 }
 <head>
     <meta charset="utf-8" />
@@ -21,7 +37,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ResturangFrontEnd.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3 justify-content-center">
             <div class="d-flex">
@@ -77,13 +93,13 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="container flex-grow-1 mb-4">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top bg-dark text-light text-center footer">
+    <footer class="border-top bg-dark text-light text-center footer mt-auto pb-1">
         <div class="container" style="line-height: normal">
             <p class="mt-3"><span class="fw-bold">Restaurant Kifo</span> - A restaurant and booking system</p>
             <p class="d-flex gap-3 justify-content-center flex-wrap">

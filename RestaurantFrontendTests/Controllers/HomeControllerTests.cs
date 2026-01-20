@@ -90,5 +90,306 @@ namespace Restaurant_Frontend_Tests.Controllers
             var model = view.Model.Should().BeOfType<ErrorViewModel>().Subject;
             model.RequestId.Should().NotBeNullOrEmpty();
         }
+
+        #region AvailableTables Tests
+
+        [Fact]
+        public async Task AvailableTables_Get_ReturnsViewWithViewModel()
+        {
+            var tables = new List<TableGetDTO>
+            {
+                new() { TableID = 1, TableSeats = 4, IsAvailable = true },
+                new() { TableID = 2, TableSeats = 2, IsAvailable = true }
+            };
+
+            var handler = new DelegatingHandlerStub((request, _) =>
+            {
+                request.Method.Should().Be(HttpMethod.Get);
+                request.RequestUri!.AbsoluteUri.Should().Contain("api/Tables/AvailableTables");
+
+                var json = JsonConvert.SerializeObject(tables);
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(json, Encoding.UTF8, "application/json")
+                };
+            });
+
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+
+            // Use a future date to ensure hours are available
+            var futureDate = DateTime.Today.AddDays(1);
+            var result = await controller.AvailableTables(futureDate, 2, 10);
+
+            var view = result.Should().BeOfType<ViewResult>().Subject;
+            var model = view.Model.Should().BeOfType<AvailableTablesViewModel>().Subject;
+            model.SelectedDate.Should().Be(futureDate.Date);
+            model.SelectedSeats.Should().Be(2);
+            model.SelectedHour.Should().Be(10);
+            model.AvailableTables.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public async Task AvailableTables_Get_DefaultsToTodayAndTwoSeats()
+        {
+            var tables = new List<TableGetDTO>();
+
+            var handler = new DelegatingHandlerStub((request, _) =>
+            {
+                var json = JsonConvert.SerializeObject(tables);
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(json, Encoding.UTF8, "application/json")
+                };
+            });
+
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+
+            var result = await controller.AvailableTables(null, 2, null);
+
+            var view = result.Should().BeOfType<ViewResult>().Subject;
+            var model = view.Model.Should().BeOfType<AvailableTablesViewModel>().Subject;
+            model.SelectedDate.Should().Be(DateTime.Today);
+            model.SelectedSeats.Should().Be(2);
+        }
+
+        [Fact]
+        public async Task ConfirmAvailableTable_WithValidHour_ShowsBookingForm()
+        {
+            var tables = new List<TableGetDTO>
+            {
+                new() { TableID = 1, TableSeats = 4, IsAvailable = true }
+            };
+
+            var handler = new DelegatingHandlerStub((request, _) =>
+            {
+                var json = JsonConvert.SerializeObject(tables);
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(json, Encoding.UTF8, "application/json")
+                };
+            });
+
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            SetupControllerContext(controller);
+
+            var vm = new AvailableTablesViewModel
+            {
+                SelectedDate = DateTime.Today.AddDays(1),
+                SelectedSeats = 2,
+                SelectedHour = 10
+            };
+
+            var result = await controller.ConfirmAvailableTable(vm);
+
+            var view = result.Should().BeOfType<ViewResult>().Subject;
+            view.ViewName.Should().Be("AvailableTables");
+            var model = view.Model.Should().BeOfType<AvailableTablesViewModel>().Subject;
+            model.ShowBookingForm.Should().BeTrue();
+            model.SelectedTableID.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task ConfirmAvailableTable_WithNoHour_DoesNotShowBookingForm()
+        {
+            var handler = new DelegatingHandlerStub((_, __) => new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("[]", Encoding.UTF8, "application/json")
+            });
+
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            SetupControllerContext(controller);
+
+            var vm = new AvailableTablesViewModel
+            {
+                SelectedDate = DateTime.Today.AddDays(1),
+                SelectedSeats = 2,
+                SelectedHour = null
+            };
+
+            var result = await controller.ConfirmAvailableTable(vm);
+
+            var view = result.Should().BeOfType<ViewResult>().Subject;
+            var model = view.Model.Should().BeOfType<AvailableTablesViewModel>().Subject;
+            model.ShowBookingForm.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task ConfirmAvailableTable_WithNoAvailableTables_DoesNotShowBookingForm()
+        {
+            var handler = new DelegatingHandlerStub((_, __) => new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("[]", Encoding.UTF8, "application/json")
+            });
+
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            SetupControllerContext(controller);
+
+            var vm = new AvailableTablesViewModel
+            {
+                SelectedDate = DateTime.Today.AddDays(1),
+                SelectedSeats = 2,
+                SelectedHour = 10
+            };
+
+            var result = await controller.ConfirmAvailableTable(vm);
+
+            var view = result.Should().BeOfType<ViewResult>().Subject;
+            var model = view.Model.Should().BeOfType<AvailableTablesViewModel>().Subject;
+            model.ShowBookingForm.Should().BeFalse();
+            model.SelectedTableID.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task BookAvailableTable_WithValidData_RedirectsToAvailableTables()
+        {
+            var tables = new List<TableGetDTO>
+            {
+                new() { TableID = 1, TableSeats = 4, IsAvailable = true }
+            };
+
+            var handler = new DelegatingHandlerStub((request, _) =>
+            {
+                if (request.Method == HttpMethod.Post)
+                {
+                    request.RequestUri!.AbsoluteUri.Should().Contain("api/bookings/CreateBooking");
+                    return new HttpResponseMessage(HttpStatusCode.Created);
+                }
+
+                var json = JsonConvert.SerializeObject(tables);
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(json, Encoding.UTF8, "application/json")
+                };
+            });
+
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            SetupControllerContext(controller);
+
+            var vm = new AvailableTablesViewModel
+            {
+                SelectedDate = DateTime.Today.AddDays(1),
+                SelectedSeats = 2,
+                SelectedHour = 10,
+                SelectedTableID = 1,
+                Name = "John Doe",
+                Phone = "123456789",
+                Email = "john@example.com"
+            };
+
+            var result = await controller.BookAvailableTable(vm);
+
+            var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            redirect.ActionName.Should().Be("AvailableTables");
+        }
+
+        [Fact]
+        public async Task BookAvailableTable_WithNoHour_ReturnsViewWithoutBookingForm()
+        {
+            var handler = new DelegatingHandlerStub((_, __) => new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("[]", Encoding.UTF8, "application/json")
+            });
+
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            SetupControllerContext(controller);
+
+            var vm = new AvailableTablesViewModel
+            {
+                SelectedDate = DateTime.Today.AddDays(1),
+                SelectedSeats = 2,
+                SelectedHour = null
+            };
+
+            var result = await controller.BookAvailableTable(vm);
+
+            var view = result.Should().BeOfType<ViewResult>().Subject;
+            var model = view.Model.Should().BeOfType<AvailableTablesViewModel>().Subject;
+            model.ShowBookingForm.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task BookAvailableTable_WithInvalidModel_ReturnsViewWithBookingForm()
+        {
+            var tables = new List<TableGetDTO>
+            {
+                new() { TableID = 1, TableSeats = 4, IsAvailable = true }
+            };
+
+            var handler = new DelegatingHandlerStub((request, _) =>
+            {
+                var json = JsonConvert.SerializeObject(tables);
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(json, Encoding.UTF8, "application/json")
+                };
+            });
+
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            SetupControllerContext(controller);
+            controller.ModelState.AddModelError("Name", "Required");
+
+            var vm = new AvailableTablesViewModel
+            {
+                SelectedDate = DateTime.Today.AddDays(1),
+                SelectedSeats = 2,
+                SelectedHour = 10,
+                SelectedTableID = 1
+            };
+
+            var result = await controller.BookAvailableTable(vm);
+
+            var view = result.Should().BeOfType<ViewResult>().Subject;
+            var model = view.Model.Should().BeOfType<AvailableTablesViewModel>().Subject;
+            model.ShowBookingForm.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task BookAvailableTable_WithNoTableSelected_AddsModelError()
+        {
+            var tables = new List<TableGetDTO>
+            {
+                new() { TableID = 1, TableSeats = 4, IsAvailable = true }
+            };
+
+            var handler = new DelegatingHandlerStub((request, _) =>
+            {
+                var json = JsonConvert.SerializeObject(tables);
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(json, Encoding.UTF8, "application/json")
+                };
+            });
+
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            SetupControllerContext(controller);
+
+            var vm = new AvailableTablesViewModel
+            {
+                SelectedDate = DateTime.Today.AddDays(1),
+                SelectedSeats = 2,
+                SelectedHour = 10,
+                SelectedTableID = null,
+                Name = "John",
+                Phone = "123",
+                Email = "a@b.com"
+            };
+
+            var result = await controller.BookAvailableTable(vm);
+
+            var view = result.Should().BeOfType<ViewResult>().Subject;
+            var model = view.Model.Should().BeOfType<AvailableTablesViewModel>().Subject;
+            model.ShowBookingForm.Should().BeTrue();
+            controller.ModelState.ContainsKey("SelectedTableID").Should().BeTrue();
+        }
+
+        #endregion
+
+        private static void SetupControllerContext(HomeController controller)
+        {
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+        }
     }
 }
