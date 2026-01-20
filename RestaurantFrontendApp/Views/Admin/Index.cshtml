@@ -4,7 +4,52 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<p>Welcome to the admin area.</p>
-<form asp-action="Logout" asp-controller="Admin" method="post">
+<p>Welcome to the admin area. Manage your restaurant from here.</p>
+
+<div class="row mt-4">
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Menu Items</h5>
+                <p class="card-text">Manage menu items - add, edit, or remove dishes.</p>
+                <a asp-controller="MenuItems" asp-action="Index" class="btn btn-primary">Manage Menu Items</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Menus</h5>
+                <p class="card-text">Manage menus - organize your menu categories.</p>
+                <a asp-controller="Menu" asp-action="Index" class="btn btn-primary">Manage Menus</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Tables</h5>
+                <p class="card-text">Manage tables - configure seating arrangements.</p>
+                <a asp-controller="Table" asp-action="Index" class="btn btn-primary">Manage Tables</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Bookings</h5>
+                <p class="card-text">Manage bookings - view and manage reservations.</p>
+                <a asp-controller="Booking" asp-action="Index" class="btn btn-primary">Manage Bookings</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr class="my-4" />
+
+<form asp-action="Logout" asp-controller="Admin" method="post" class="d-inline">
     <button type="submit" class="btn btn-secondary">Logout</button>
 </form>

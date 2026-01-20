@@ -186,13 +186,11 @@ namespace ResturangFrontEnd.Controllers
             var booking = new Booking
             {
                 TableID = vm.SelectedTableID.Value,
-                AmountOfPeople = vm.SelectedSeats,
                 Time = timeUtc,
                 TimeEnd = timeEndUtc,
                 Name = vm.Name,
                 Phone = vm.Phone,
-                Email = vm.Email,
-                MaxSeats = vm.SelectedSeats
+                Email = vm.Email
             };
 
             var json = JsonConvert.SerializeObject(booking);

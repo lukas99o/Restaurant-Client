@@ -19,7 +19,6 @@ namespace Restaurant_Frontend_Tests.Controllers
             {
                 BookingID = 1,
                 TableID = 2,
-                AmountOfPeople = 3,
                 Time = DateTime.UtcNow,
                 TimeEnd = DateTime.UtcNow.AddHours(2),
                 Name = "Guest",
@@ -88,7 +87,6 @@ namespace Restaurant_Frontend_Tests.Controllers
             {
                 BookingID = 1,
                 TableID = 2,
-                AmountOfPeople = 3,
                 Time = DateTime.UtcNow,
                 TimeEnd = DateTime.UtcNow.AddHours(1),
                 Name = "Guest",

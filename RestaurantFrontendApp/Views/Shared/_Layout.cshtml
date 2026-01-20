@@ -75,19 +75,6 @@
                                 }
                             }
                         }
-                        @if (isAdmin) 
-                        {
-                            <li class="nav-item">
-                                <a class="@(NavLinkClass("Admin", "Index"))" asp-controller="Admin" asp-action="Index">CRUD</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="@(NavLinkClass("Account", "LogOut"))" asp-controller="Account" asp-action="LogOut">Log Out</a>
-                            </li>
-                        } @* else {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
-                        } *@
                     </ul>
                 </div>
             </div>
