@@ -1,0 +1,61 @@
+@model ResturangFrontEnd.Models.BookingConfirmedViewModel
+@{
+    ViewData["Title"] = "Booking confirmed";
+
+    var date = Model.DateLocal.ToString("yyyy-MM-dd");
+    var timeWindow = $"{Model.Hour:00}:00 - {Model.Hour + 1:00}:00";
+}
+
+<div class="container py-4">
+    <div class="alert alert-success">
+        <h3 class="mb-2">Booking confirmed</h3>
+        <div>Your booking at <strong>Restaurant Kifo</strong> is confirmed.</div>
+        <div class="mt-2">Check your inbox for an email confirmation.</div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title mb-3">Booking details</h5>
+
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Date</span>
+                <strong>@date</strong>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Time</span>
+                <strong>@timeWindow</strong>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Seats</span>
+                <strong>@Model.Seats</strong>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Table</span>
+                <strong>@Model.TableId</strong>
+            </div>
+
+            <hr />
+
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Name</span>
+                <strong>@Model.Name</strong>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Email</span>
+                <strong>@Model.Email</strong>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.Phone))
+            {
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Phone</span>
+                    <strong>@Model.Phone</strong>
+                </div>
+            }
+
+            <div class="mt-3">
+                <a class="btn btn-primary" asp-controller="Home" asp-action="AvailableTables">Make another booking</a>
+                <a class="btn btn-link" asp-controller="Home" asp-action="Index">Back to home</a>
+            </div>
+        </div>
+    </div>
+</div>

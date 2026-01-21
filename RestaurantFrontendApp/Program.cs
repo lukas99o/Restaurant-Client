@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using ResturangFrontEnd.Services;
 using System.Text;
 
 namespace ResturangFrontEnd
@@ -14,6 +15,12 @@ namespace ResturangFrontEnd
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpClient();
             builder.Services.AddSession();
+
+            builder.Services.AddOptions<EmailOptions>()
+                .Bind(builder.Configuration.GetSection(EmailOptions.SectionName))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+            builder.Services.AddScoped<IEmailService, EmailService>();
 
             builder.Services.AddAuthentication(o =>
             {

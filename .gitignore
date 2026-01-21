@@ -214,6 +214,9 @@ csx/
 ecf/
 rcf/
 
+# appsettings
+appsettings.development.json
+
 # Windows Store app package directories and files
 AppPackages/
 BundleArtifacts/

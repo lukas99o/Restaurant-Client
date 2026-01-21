@@ -2,10 +2,8 @@
 
 namespace ResturangFrontEnd.Models
 {
-    public class Booking
+    public class BookingCreateDTO
     {
-        public int? BookingID { get; set; }
-
         [Required(ErrorMessage = "This field can't be empty")]
         public int TableID { get; set; }
 
@@ -19,9 +17,11 @@ namespace ResturangFrontEnd.Models
         public string? Name { get; set; }
 
         [Required(ErrorMessage = "This field can't be empty")]
+        [Phone]
         public string? Phone { get; set; }
 
         [Required(ErrorMessage = "This field can't be empty")]
+        [EmailAddress]
         public string? Email { get; set; }
     }
 }

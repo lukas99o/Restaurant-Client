@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ResturangFrontEnd.Models;
-using System.ComponentModel.DataAnnotations;
+using ResturangFrontEnd.Services;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
@@ -12,12 +12,14 @@ namespace ResturangFrontEnd.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly HttpClient _httpClient;
+        private readonly IEmailService _emailService;
         private string baseUrl = "https://localhost:7157/";
 
-        public HomeController(ILogger<HomeController> logger, HttpClient httpClient)
+        public HomeController(ILogger<HomeController> logger, HttpClient httpClient, IEmailService emailService)
         {
             _logger = logger;
             _httpClient = httpClient;
+            _emailService = emailService;
         }
 
         public async Task<IActionResult> Index()
@@ -183,7 +185,7 @@ namespace ResturangFrontEnd.Controllers
                 return View("AvailableTables", vm);
             }
 
-            var booking = new Booking
+            var booking = new BookingCreateDTO
             {
                 TableID = vm.SelectedTableID.Value,
                 Time = timeUtc,
@@ -194,10 +196,48 @@ namespace ResturangFrontEnd.Controllers
             };
 
             var json = JsonConvert.SerializeObject(booking);
-            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-            await _httpClient.PostAsync($"{baseUrl}api/bookings/CreateBooking", content);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync($"{baseUrl}api/bookings/CreateBooking", content);
 
-            return RedirectToAction(nameof(AvailableTables), new { date = vm.SelectedDate.ToString("yyyy-MM-dd"), seats = vm.SelectedSeats, hour = vm.SelectedHour });
+            if (!response.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError(string.Empty, "Failed to create booking. Please try again.");
+                vm.ShowBookingForm = true;
+                return View("AvailableTables", vm);
+            }
+
+            // Send confirmation email (best-effort; booking is already created)
+            try
+            {
+                await _emailService.SendBookingConfirmationAsync(new BookingConfirmationEmailModel
+                {
+                    ToEmail = vm.Email!,
+                    Name = vm.Name!,
+                    Phone = vm.Phone,
+                    DateLocal = vm.SelectedDate,
+                    Hour = vm.SelectedHour.Value,
+                    Seats = vm.SelectedSeats,
+                    TableId = vm.SelectedTableID.Value
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send booking confirmation email to {Email}", vm.Email);
+            }
+
+            // Show confirmation page
+            var confirmation = new BookingConfirmedViewModel
+            {
+                Name = vm.Name!,
+                Email = vm.Email!,
+                Phone = vm.Phone,
+                DateLocal = vm.SelectedDate,
+                Hour = vm.SelectedHour.Value,
+                Seats = vm.SelectedSeats,
+                TableId = vm.SelectedTableID.Value
+            };
+
+            return View("BookingConfirmed", confirmation);
         }
     }
 }
