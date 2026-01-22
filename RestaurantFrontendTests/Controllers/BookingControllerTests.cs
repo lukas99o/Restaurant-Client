@@ -124,7 +124,7 @@ namespace Restaurant_Frontend_Tests.Controllers
 
             var controller = new BookingController(new HttpClient(handler));
 
-            var result = await controller.Edit(booking.BookingID);
+            var result = await controller.Edit(booking.BookingID!.Value);
 
             var view = result.Should().BeOfType<ViewResult>().Subject;
             var model = view.Model.Should().BeOfType<Booking>().Subject;

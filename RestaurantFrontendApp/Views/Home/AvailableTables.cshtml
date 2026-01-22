@@ -1,7 +1,7 @@
 ﻿@model AvailableTablesViewModel
 
 @{
-    ViewData["Title"] = ViewData["Title"] ?? "Available Tables";
+    ViewData["Title"] = ViewData["Title"] ?? "Book Table";
 
     var availableBySeats = Model.AvailableTables
         .Where(t => t.TableSeats >= Model.SelectedSeats)
@@ -12,17 +12,15 @@
     var selectedHour = Model.SelectedHour;
 }
 
-<h1 class="mb-3">@ViewData["Title"]</h1>
-
 <form method="get" asp-action="AvailableTables" class="mb-4">
     <div class="row g-3 align-items-end">
         <div class="col-12 col-md-4">
-            <label class="form-label">Date</label>
+            <label class="form-label fw-bold">Date</label>
             <input class="form-control" type="date" name="date" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" onchange="this.form.submit()" />
         </div>
 
         <div class="col-12 col-md-4">
-            <label class="form-label">Time</label>
+            <label class="form-label fw-bold">Time</label>
             <select class="form-select" name="hour" onchange="this.form.submit()">
                 @foreach (var h in Model.AvailableHours)
                 {
@@ -32,7 +30,7 @@
         </div>
 
         <div class="col-12 col-md-4">
-            <label class="form-label">Seats</label>
+            <label class="form-label fw-bold">Seats</label>
             <div class="d-flex gap-3">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="seats" id="seats2" value="2" checked="@(Model.SelectedSeats == 2)" onchange="this.form.submit()" />

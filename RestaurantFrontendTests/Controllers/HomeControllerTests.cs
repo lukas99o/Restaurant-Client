@@ -30,7 +30,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
 
             var result = await controller.Index();
 
@@ -56,7 +56,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
 
             var result = await controller.Menu();
 
@@ -68,7 +68,7 @@ namespace Restaurant_Frontend_Tests.Controllers
         [Fact]
         public void Privacy_ReturnsView()
         {
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(new DelegatingHandlerStub((_, __) => new HttpResponseMessage(HttpStatusCode.OK))));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(new DelegatingHandlerStub((_, __) => new HttpResponseMessage(HttpStatusCode.OK))), new NoopEmailService());
 
             var result = controller.Privacy();
 
@@ -78,7 +78,7 @@ namespace Restaurant_Frontend_Tests.Controllers
         [Fact]
         public void Error_ReturnsErrorViewModelWithRequestId()
         {
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(new DelegatingHandlerStub((_, __) => new HttpResponseMessage(HttpStatusCode.OK))));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(new DelegatingHandlerStub((_, __) => new HttpResponseMessage(HttpStatusCode.OK))), new NoopEmailService());
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -114,7 +114,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
 
             // Use a future date to ensure hours are available
             var futureDate = DateTime.Today.AddDays(1);
@@ -142,7 +142,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
 
             var result = await controller.AvailableTables(null, 2, null);
 
@@ -169,7 +169,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
             SetupControllerContext(controller);
 
             var vm = new AvailableTablesViewModel
@@ -196,7 +196,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 Content = new StringContent("[]", Encoding.UTF8, "application/json")
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
             SetupControllerContext(controller);
 
             var vm = new AvailableTablesViewModel
@@ -221,7 +221,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 Content = new StringContent("[]", Encoding.UTF8, "application/json")
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
             SetupControllerContext(controller);
 
             var vm = new AvailableTablesViewModel
@@ -240,7 +240,7 @@ namespace Restaurant_Frontend_Tests.Controllers
         }
 
         [Fact]
-        public async Task BookAvailableTable_WithValidData_RedirectsToAvailableTables()
+        public async Task BookAvailableTable_WithValidData_ReturnsBookingConfirmedView()
         {
             var tables = new List<TableGetDTO>
             {
@@ -262,7 +262,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
             SetupControllerContext(controller);
 
             var vm = new AvailableTablesViewModel
@@ -278,8 +278,8 @@ namespace Restaurant_Frontend_Tests.Controllers
 
             var result = await controller.BookAvailableTable(vm);
 
-            var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
-            redirect.ActionName.Should().Be("AvailableTables");
+            var view = result.Should().BeOfType<ViewResult>().Subject;
+            view.ViewName.Should().Be("BookingConfirmed");
         }
 
         [Fact]
@@ -290,7 +290,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 Content = new StringContent("[]", Encoding.UTF8, "application/json")
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
             SetupControllerContext(controller);
 
             var vm = new AvailableTablesViewModel
@@ -324,7 +324,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
             SetupControllerContext(controller);
             controller.ModelState.AddModelError("Name", "Required");
 
@@ -360,7 +360,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
             SetupControllerContext(controller);
 
             var vm = new AvailableTablesViewModel
@@ -394,7 +394,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
 
             await controller.Index();
 
@@ -413,7 +413,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
 
             await controller.Menu();
 
@@ -432,7 +432,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
 
             await controller.AvailableTables(DateTime.Today.AddDays(1), 2, 10);
 
@@ -451,7 +451,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
 
             var result = await controller.AvailableTables(DateTime.Today.AddDays(1), 8, 12);
 
@@ -472,7 +472,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
 
             var futureDate = DateTime.Today.AddDays(1);
             var result = await controller.AvailableTables(futureDate, 2, 14);
@@ -503,7 +503,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
             SetupControllerContext(controller);
 
             var vm = new AvailableTablesViewModel
@@ -538,7 +538,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
             SetupControllerContext(controller);
 
             var vm = new AvailableTablesViewModel
@@ -566,11 +566,11 @@ namespace Restaurant_Frontend_Tests.Controllers
                 new() { TableID = 5, TableSeats = 4, IsAvailable = true }
             };
 
-            var handler = new DelegatingHandlerStub((request, _) =>
+            var handler = new DelegatingHandlerStub(async (request, _) =>
             {
                 if (request.Method == HttpMethod.Post)
                 {
-                    var content = request.Content!.ReadAsStringAsync().Result;
+                    var content = await request.Content!.ReadAsStringAsync();
                     capturedBooking = JsonConvert.DeserializeObject<Booking>(content);
                     return new HttpResponseMessage(HttpStatusCode.Created);
                 }
@@ -582,7 +582,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
             SetupControllerContext(controller);
 
             var vm = new AvailableTablesViewModel
@@ -606,7 +606,7 @@ namespace Restaurant_Frontend_Tests.Controllers
         }
 
         [Fact]
-        public async Task BookAvailableTable_RedirectsWithCorrectRouteValues()
+        public async Task BookAvailableTable_ReturnsBookingConfirmedViewModel()
         {
             var tables = new List<TableGetDTO>
             {
@@ -627,7 +627,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
             SetupControllerContext(controller);
 
             var selectedDate = DateTime.Today.AddDays(3);
@@ -644,13 +644,17 @@ namespace Restaurant_Frontend_Tests.Controllers
 
             var result = await controller.BookAvailableTable(vm);
 
-            var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
-            redirect.ActionName.Should().Be("AvailableTables");
-            redirect.RouteValues.Should().ContainKey("date");
-            redirect.RouteValues.Should().ContainKey("seats");
-            redirect.RouteValues.Should().ContainKey("hour");
-            redirect.RouteValues!["seats"].Should().Be(6);
-            redirect.RouteValues["hour"].Should().Be(18);
+            var view = result.Should().BeOfType<ViewResult>().Subject;
+            view.ViewName.Should().Be("BookingConfirmed");
+
+            var model = view.Model.Should().BeOfType<BookingConfirmedViewModel>().Subject;
+            model.Name.Should().Be("Jane");
+            model.Email.Should().Be("jane@test.com");
+            model.Phone.Should().Be("123");
+            model.Seats.Should().Be(6);
+            model.Hour.Should().Be(18);
+            model.DateLocal.Should().Be(selectedDate.Date);
+            model.TableId.Should().Be(1);
         }
 
         [Fact]
@@ -665,7 +669,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
 
             var futureDate = DateTime.Today.AddDays(1);
             var result = await controller.AvailableTables(futureDate, 2, null);
@@ -688,7 +692,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
 
             var futureDate = DateTime.Today.AddDays(1);
             var result = await controller.AvailableTables(futureDate, 2, null);
@@ -715,7 +719,7 @@ namespace Restaurant_Frontend_Tests.Controllers
                 };
             });
 
-            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler));
+            var controller = new HomeController(NullLogger<HomeController>.Instance, new HttpClient(handler), new NoopEmailService());
             SetupControllerContext(controller);
             controller.ModelState.AddModelError("Name", "Required");
 
