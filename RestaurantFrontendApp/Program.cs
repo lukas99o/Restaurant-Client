@@ -53,6 +53,12 @@ namespace ResturangFrontEnd
                 };
             });
 
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("MustHaveChangedPassword", policy =>
+                    policy.RequireClaim("ChangedPassword", "true"));
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

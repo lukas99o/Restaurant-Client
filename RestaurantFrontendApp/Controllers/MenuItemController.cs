@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ResturangFrontEnd.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "MustHaveChangedPassword")]
     public class MenuItemController : Controller
     {
         private readonly HttpClient _httpClient;

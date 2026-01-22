@@ -22,7 +22,7 @@ namespace ResturangFrontEnd.Controllers
         // Parameterless constructor to support simple unit tests
         //public AdminController() : this(new HttpClient()) { }
 
-        [Authorize]
+        [Authorize(Policy = "MustHaveChangedPassword")]
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
@@ -75,7 +75,7 @@ namespace ResturangFrontEnd.Controllers
             var responseBody = await response.Content.ReadAsStringAsync();
             var tokenWrapper = JsonConvert.DeserializeObject<LoginResponse>(responseBody);
             var token = tokenWrapper?.Token;
-            var changedPassword = tokenWrapper?.ChangedPassword ?? false;
+            var changedPassword = tokenWrapper?.ChangedPassword == "true" ? true : false;
 
             if (string.IsNullOrWhiteSpace(token))
             {
@@ -180,7 +180,7 @@ namespace ResturangFrontEnd.Controllers
         private class LoginResponse
         {
             public string? Token { get; set; }
-            public bool ChangedPassword { get; set; }
+            public string? ChangedPassword { get; set; }
         }
 
         private class UserStatus
