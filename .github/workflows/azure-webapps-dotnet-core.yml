@@ -1,4 +1,4 @@
-name: Deploy Frontend MVC to Azure
+name: Deploy Frontend MVC
 
 on: 
   push:
