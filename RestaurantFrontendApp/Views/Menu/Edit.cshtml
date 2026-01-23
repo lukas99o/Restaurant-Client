@@ -1,6 +1,6 @@
 ﻿@model Menu
 
-<a asp-action="Index" asp-controller="MenuItems" class="btn btn-primary">Return</a>
+<a asp-action="Index" asp-controller="Menu" class="btn btn-primary mb-4">Return</a>
 
 <h1>Edit Menu</h1>
 
@@ -11,5 +11,5 @@
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <input type="hidden" asp-for="MenuID" />
-    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="submit" class="btn btn-primary mt-2">Save</button>
 </form>

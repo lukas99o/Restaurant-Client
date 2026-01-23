@@ -1,27 +1,33 @@
 ﻿@model List<Booking>
 
-<a asp-action="Index" asp-controller="Admin" class="btn btn-primary">Return</a>
+<div class="d-flex gap-3 mb-4">
+    <a asp-action="Index" asp-controller="Admin" class="btn btn-primary">Return</a>
+    <a asp-action="Create" asp-controller="Booking" class="btn btn-primary">Create</a>
+</div>
 
-@foreach(var booking in Model)
-{
-    <div class="card" style="width:18rem">
-        <div class="card-body">
-            <h5 class="card-title">Booking ID: @booking.BookingID</h5>
+<div class="d-flex gap-2 flex-wrap">
+    @foreach (var booking in Model)
+    {
+        <div class="card" style="width:18rem">
+            <div class="card-body">
+                <h5 class="card-title">Booking ID: @booking.BookingID</h5>
 
-            <p class="card-text">TableID: @booking.TableID</p>
-            <p class="card-text">Time: @booking.Time</p>
-            <p class="card-text">TimeEnd: @booking.TimeEnd</p>
-            <a asp-controller="Bookings" asp-action="Edit" asp-route-id=@booking.BookingID class="btn btn-warning">Edit</a>
+                <p class="card-text">TableID: @booking.TableID</p>
+                <p class="card-text">Time: @booking.Time</p>
+                <p class="card-text">TimeEnd: @booking.TimeEnd</p>
+                <a asp-controller="Booking" asp-action="Edit" asp-route-id=@booking.BookingID class="btn btn-warning">Edit</a>
 
 
-            <form method="post" asp-action="Delete" style="display:inline;">
-                <input type="hidden" name="bookingID" value="@booking.BookingID" />
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
+                <form method="post" asp-action="Delete" style="display:inline;">
+                    <input type="hidden" name="bookingID" value="@booking.BookingID" />
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
 
+            </div>
         </div>
-    </div>
-}
+    }
+</div>
 
-<a asp-action="Create" asp-controller="Bookings" class="btn btn-primary">Create</a>
+
+
 

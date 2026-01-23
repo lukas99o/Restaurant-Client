@@ -1,22 +1,25 @@
 ﻿@model List<Menu>
 
-<a asp-action="Welcome" asp-controller="Login" class="btn btn-primary">Return</a>
+<div class="d-flex gap-3 mb-4">
+    <a asp-action="Index" asp-controller="Admin" class="btn btn-primary">Return</a>
+    <a asp-action="Create" asp-controller="Menu" class="btn btn-primary">Create</a>
+</div>
 
-@foreach (var menu in Model)
-{
-    <div class="card" style="width:18rem">
-        <div class="card-body">
-            <h5 class="card-title">Menu Title: @menu.Name</h5>
+<div class="d-flex gap-2 flex-wrap">
+    @foreach (var menu in Model)
+    {
+        <div class="card" style="width:18rem">
+            <div class="card-body">
+                <h5 class="card-title">Menu Title: @menu.Name</h5>
 
-            <a asp-controller="Menus" asp-action="Edit" asp-route-id=@menu.MenuID class="btn btn-warning">Edit</a>
+                <a asp-controller="Menu" asp-action="Edit" asp-route-id=@menu.MenuID class="btn btn-warning">Edit</a>
 
-            <form method="post" asp-action="Delete" style="display:inline;">
-                <input type="hidden" name="menuID" value="@menu.MenuID" />
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
+                <form method="post" asp-action="Delete" style="display:inline;">
+                    <input type="hidden" name="menuID" value="@menu.MenuID" />
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
 
+            </div>
         </div>
-    </div>
-}
-
-<a asp-action="Create" asp-controller="Menus" class="btn btn-primary">Create</a>
+    }
+</div>

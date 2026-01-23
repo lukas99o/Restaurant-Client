@@ -75,7 +75,11 @@ namespace ResturangFrontEnd.Controllers
             var responseBody = await response.Content.ReadAsStringAsync();
             var tokenWrapper = JsonConvert.DeserializeObject<LoginResponse>(responseBody);
             var token = tokenWrapper?.Token;
-            var changedPassword = tokenWrapper?.ChangedPassword == "true" ? true : false;
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+            var changedPasswordClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "ChangedPassword")?.Value;
+            var changedPassword = changedPasswordClaim == "true";
 
             if (string.IsNullOrWhiteSpace(token))
             {
